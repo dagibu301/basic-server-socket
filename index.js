@@ -12,7 +12,14 @@ const io = new Server(server);
 app.use(express.static(__dirname + '/public'));
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  socket.emit('message', {
+    msg: 'Welcome to the chat app',
+    date: new Date(),
+  });
+
+  socket.on('message-client', (data) => {
+    console.log(data);
+  })
 });
 
 server.listen(8080, () => {
