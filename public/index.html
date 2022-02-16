@@ -14,35 +14,31 @@
   </head>
   <body class="container">
     <h1 class="mt-5">Mini Chat</h1>
-    <hr>
+    <hr />
 
-    <form id="myForm" >
+    <form id="myForm">
       <div class="row">
         <div class="col-8">
           <input
             type="text"
+            id="txtMessage"
             class="form-control"
-            id="message"
             placeholder="Message"
           />
         </div>
 
         <div class="col-4">
-          <button class="btn btn-primary">Send</button>
+          <button type="submit" class="btn btn-primary">Send</button>
         </div>
       </div>
     </form>
 
     <div class="row">
       <div class="col">
-
-        <ul id="messages" class="mt-2">
-          <li>Hello</li>
-          <li>World</li>
-        </ul>
+        <ul id="messages" class="mt-2"></ul>
       </div>
     </div>
-    
+
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"
       integrity="sha512-MgkNs0gNdrnOM7k+0L+wgiRc5aLgl74sJQKbIWegVIMvVGPc1+gc1L2oK9Wf/D9pq58eqIJAxOonYPVE5UwUFA=="
@@ -53,17 +49,18 @@
       const socket = io('http://localhost:8080');
       const form = document.querySelector('#myForm');
       const messages = document.querySelector('#messages');
+      const txtMessage = document.querySelector('#txtMessage');
 
-      socket.on('message', (data) => {
-        console.log(data);
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newMessage = txtMessage.value;
+        socket.emit('message-to-server', { message: newMessage });
       });
 
-      /* setTimeout(() => {
-        socket.emit('message-client', {
-          message: 'Hello World',
-          user: 'John Doe',
-        });
-      }, 2000); */
+      socket.on('message-from-server', (data) => {
+        console.log(data);
+        messages.innerHTML += `<li>${data.message}</li>`;
+      });
     </script>
   </body>
 </html>
