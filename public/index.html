@@ -55,6 +55,7 @@
         e.preventDefault();
         const newMessage = txtMessage.value;
         socket.emit('message-to-server', { message: newMessage });
+        txtMessage.value = '';
       });
 
       socket.on('message-from-server', (data) => {
